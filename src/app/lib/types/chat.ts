@@ -1,7 +1,16 @@
+
+export type MessageRole =
+  | "user"
+  | "assistant";
+
 export type Message = {
-  id: number;
-  role: "user" | "assistant";
+  id: string | number;
+  role: MessageRole;
   content: string;
+
+  fileName?: string;
+  fileType?: string;
+  fileUrl?: string;
 };
 
 export type Conversation = {

@@ -1,35 +1,3 @@
-// import { NextResponse } from "next/server";
-// import connectDB from "@/app/lib/mongodb";
-// import Conversation from "@/models/Conversation";
-
-// export async function GET() {
-//   try {
-//     await connectDB();
-
-//     const conversations = await Conversation.find()
-//       .sort({ updatedAt: -1 })
-//       .lean();
-
-//     return NextResponse.json(conversations);
-//   } catch (error) {
-//     console.error("MONGODB ERROR:", error);
-
-//     return NextResponse.json(
-//       {
-//         error:
-//           error instanceof Error
-//             ? error.message
-//             : "Unknown MongoDB error",
-//       },
-//       {
-//         status: 500,
-//       }
-//     );
-//   }
-// }
-
-
-
 import { NextResponse } from "next/server";
 
 import connectDB from "@/app/lib/mongodb";

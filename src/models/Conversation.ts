@@ -1,26 +1,40 @@
 import mongoose, {
   Schema,
-  models,
   model,
+  models,
 } from "mongoose";
 
-const MessageSchema = new Schema(
-  {
-    role: {
-      type: String,
-      enum: ["user", "assistant"],
-      required: true,
-    },
+const MessageSchema =
+  new Schema(
+    {
+      role: {
+        type: String,
+        enum: [
+          "user",
+          "assistant",
+        ],
+        required: true,
+      },
 
-    content: {
-      type: String,
-      required: true,
+      content: {
+        type: String,
+        required: true,
+      },
+
+      fileName: {
+        type: String,
+        default: null,
+      },
+
+      fileType: {
+        type: String,
+        default: null,
+      },
     },
-  },
-  {
-    _id: false,
-  }
-);
+    {
+      _id: true,
+    }
+  );
 
 const ConversationSchema =
   new Schema(
