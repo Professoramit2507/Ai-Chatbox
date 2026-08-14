@@ -4,32 +4,26 @@ import { Bot, Menu, X } from "lucide-react";
 import { useState } from "react";
 import NewChatButton from "../sideber/NewChatBtn";
 import ChatHistory from "./ChatHistory";
+import type { Conversation } from "@/app/lib/types/chat";
 
 type SidebarProps = {
+  conversations: Conversation[];
+  activeConversationId: number | null;
   onNewChat: () => void;
+  onSelectChat: (id: number) => void;
 };
 
 export default function Sidebar({
+  conversations,
+  activeConversationId,
   onNewChat,
+  onSelectChat,
 }: SidebarProps) {
   const [open, setOpen] = useState(false);
 
-  const [chats, setChats] = useState<string[]>([
-    "React Project Help",
-    "Portfolio Website",
-    "Python Problem",
-    "Next.js Chatbot",
-  ]);
-
-  const [activeChat, setActiveChat] = useState(0);
-
-  const handleNewChat = () => {
-    const newChat = `New Chat ${chats.length + 1}`;
-
-    setChats((prev) => [newChat, ...prev]);
-    setActiveChat(0);
-
-    onNewChat();
+  const handleSelectChat = (id: number) => {
+    onSelectChat(id);
+    setOpen(false);
   };
 
   return (
@@ -42,7 +36,7 @@ export default function Sidebar({
         <Menu size={20} />
       </button>
 
-      {/* Overlay */}
+      {/* Mobile Overlay */}
       {open && (
         <div
           onClick={() => setOpen(false)}
@@ -67,7 +61,7 @@ export default function Sidebar({
 
             <div>
               <h1 className="font-semibold text-white">
-                Nova AI
+                 Amit Mahmud Amil's Ai
               </h1>
 
               <p className="text-xs text-zinc-500">
@@ -76,7 +70,6 @@ export default function Sidebar({
             </div>
           </div>
 
-          {/* Mobile Close */}
           <button
             onClick={() => setOpen(false)}
             className="text-zinc-400 hover:text-white md:hidden"
@@ -87,22 +80,24 @@ export default function Sidebar({
 
         {/* New Chat */}
         <NewChatButton
-          onNewChat={handleNewChat}
+          onNewChat={() => {
+            onNewChat();
+            setOpen(false);
+          }}
         />
 
         {/* Chat History */}
         <div className="flex-1 overflow-y-auto">
           <ChatHistory
-            chats={chats}
-            activeChat={activeChat}
-            onSelectChat={(index) => {
-              setActiveChat(index);
-              setOpen(false);
-            }}
+            conversations={conversations}
+            activeConversationId={
+              activeConversationId
+            }
+            onSelectChat={handleSelectChat}
           />
         </div>
 
-        {/* Bottom */}
+        {/* User */}
         <div className="border-t border-zinc-800 pt-4">
           <div className="flex items-center gap-3 rounded-xl p-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-800 text-sm font-semibold text-white">

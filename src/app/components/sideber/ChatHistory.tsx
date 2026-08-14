@@ -1,16 +1,17 @@
 "use client";
 
 import { MessageSquare } from "lucide-react";
+import type { Conversation } from "@/app/lib/types/chat";
 
 type ChatHistoryProps = {
-  chats: string[];
-  activeChat: number;
-  onSelectChat: (index: number) => void;
+  conversations: Conversation[];
+  activeConversationId: number | null;
+  onSelectChat: (id: number) => void;
 };
 
 export default function ChatHistory({
-  chats,
-  activeChat,
+  conversations,
+  activeConversationId,
   onSelectChat,
 }: ChatHistoryProps) {
   return (
@@ -20,23 +21,39 @@ export default function ChatHistory({
       </p>
 
       <div className="space-y-1">
-        {chats.map((chat, index) => (
-          <button
-            key={index}
-            onClick={() => onSelectChat(index)}
-            className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition ${
-              activeChat === index
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
-            }`}
-          >
-            <MessageSquare size={17} />
+        {conversations.length === 0 ? (
+          <p className="px-2 py-3 text-sm text-zinc-600">
+            No conversations yet
+          </p>
+        ) : (
+          conversations.map((conversation) => {
+            const isActive =
+              conversation.id === activeConversationId;
 
-            <span className="truncate">
-              {chat}
-            </span>
-          </button>
-        ))}
+            return (
+              <button
+                key={conversation.id}
+                onClick={() =>
+                  onSelectChat(conversation.id)
+                }
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm transition ${
+                  isActive
+                    ? "bg-zinc-800 text-white"
+                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                }`}
+              >
+                <MessageSquare
+                  size={17}
+                  className="shrink-0"
+                />
+
+                <span className="truncate">
+                  {conversation.title}
+                </span>
+              </button>
+            );
+          })
+        )}
       </div>
     </div>
   );

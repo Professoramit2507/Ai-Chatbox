@@ -1,31 +1,76 @@
+// type MessageProps = {
+//   role: "user" | "assistant";
+//   content: string;
+// };
+
+// export default function Message({
+//   role,
+//   content,
+// }: MessageProps) {
+//   const isUser = role === "user";
+
+//   return (
+//     <div
+//       className={`flex ${
+//         isUser
+//           ? "justify-end"
+//           : "justify-start"
+//       }`}
+//     >
+//       <div
+//         className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+//           isUser
+//             ? "bg-black text-white"
+//             : "bg-white text-zinc-800 shadow-sm"
+//         }`}
+//       >
+//         <p className="whitespace-pre-wrap text-sm leading-6">
+//           {content}
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+"use client";
+
+import type { Message as MessageType } from "@/app/lib/types/chat";
+
 type MessageProps = {
-  role: "user" | "assistant";
-  content: string;
+  message: MessageType;
 };
 
 export default function Message({
-  role,
-  content,
+  message,
 }: MessageProps) {
-  const isUser = role === "user";
+  const isUser =
+    message.role === "user";
 
   return (
     <div
-      className={`flex ${
+      className={`flex w-full ${
         isUser
           ? "justify-end"
           : "justify-start"
       }`}
     >
       <div
-        className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+        className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-6 ${
           isUser
-            ? "bg-black text-white"
-            : "bg-white text-zinc-800 shadow-sm"
+            ? "rounded-br-md bg-zinc-900 text-white"
+            : "rounded-bl-md border bg-white text-zinc-800 shadow-sm"
         }`}
       >
-        <p className="whitespace-pre-wrap text-sm leading-6">
-          {content}
+        <p className="whitespace-pre-wrap">
+          {message.content}
         </p>
       </div>
     </div>
