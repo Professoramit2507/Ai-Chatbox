@@ -1,31 +1,37 @@
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 
 import connectDB from "@/app/lib/mongodb";
 import Conversation from "@/models/Conversation";
 
-type Params = {
+type RouteContext = {
   params: Promise<{
     id: string;
   }>;
 };
 
-export async function GET(
+/*
+ * ==============================
+ * RENAME CHAT
+ * PATCH /api/conversations/:id
+ * ==============================
+ */
+export async function PATCH(
   request: Request,
-  { params }: Params
+  context: RouteContext
 ) {
   try {
     await connectDB();
 
-    const { id } = await params;
+    const { id } = await context.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(id)
-    ) {
+    const body = await request.json();
+
+    const title = body.title?.trim();
+
+    if (!title) {
       return NextResponse.json(
         {
-          error:
-            "Invalid conversation ID",
+          error: "Chat title is required",
         },
         {
           status: 400,
@@ -34,13 +40,20 @@ export async function GET(
     }
 
     const conversation =
-      await Conversation.findById(id).lean();
+      await Conversation.findByIdAndUpdate(
+        id,
+        {
+          title: title.slice(0, 100),
+        },
+        {
+          new: true,
+        }
+      );
 
     if (!conversation) {
       return NextResponse.json(
         {
-          error:
-            "Conversation not found",
+          error: "Conversation not found",
         },
         {
           status: 404,
@@ -51,11 +64,10 @@ export async function GET(
     return NextResponse.json({
       id: conversation._id.toString(),
       title: conversation.title,
-      messages: conversation.messages,
     });
   } catch (error) {
     console.error(
-      "GET SINGLE CONVERSATION ERROR:",
+      "RENAME CHAT ERROR:",
       error
     );
 
@@ -64,7 +76,63 @@ export async function GET(
         error:
           error instanceof Error
             ? error.message
-            : "Failed to load conversation",
+            : "Failed to rename chat",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+/*
+ * ==============================
+ * DELETE CHAT
+ * DELETE /api/conversations/:id
+ * ==============================
+ */
+export async function DELETE(
+  request: Request,
+  context: RouteContext
+) {
+  try {
+    await connectDB();
+
+    const { id } = await context.params;
+
+    const conversation =
+      await Conversation.findByIdAndDelete(
+        id
+      );
+
+    if (!conversation) {
+      return NextResponse.json(
+        {
+          error: "Conversation not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Chat deleted successfully",
+      conversationId: id,
+    });
+  } catch (error) {
+    console.error(
+      "DELETE CHAT ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete chat",
       },
       {
         status: 500,

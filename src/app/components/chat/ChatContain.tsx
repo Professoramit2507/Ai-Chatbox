@@ -274,14 +274,49 @@ export default function ChatContainer() {
   return (
     <div className="flex h-screen overflow-hidden bg-zinc-100">
 
-      <Sidebar
-        conversations={conversations}
-        activeConversationId={
-          activeConversationId
-        }
-        onNewChat={handleNewChat}
-        onSelectChat={handleSelectChat}
-      />
+     <Sidebar
+  conversations={conversations}
+  activeConversationId={
+    activeConversationId
+  }
+  onNewChat={handleNewChat}
+  onSelectChat={handleSelectChat}
+
+  onConversationDeleted={(id) => {
+    setConversations((prev) =>
+      prev.filter(
+        (conversation) =>
+          conversation.id !== id
+      )
+    );
+
+    /*
+     * যদি deleted chat-টাই active হয়
+     */
+    if (
+      activeConversationId === id
+    ) {
+      setActiveConversationId(null);
+    }
+  }}
+
+  onConversationRenamed={(
+    id,
+    title
+  ) => {
+    setConversations((prev) =>
+      prev.map(
+        (conversation) =>
+          conversation.id === id
+            ? {
+                ...conversation,
+                title,
+              }
+            : conversation
+      )
+    );
+  }}
+/>
 
       <div className="flex min-w-0 flex-1 flex-col">
 
